@@ -2,3 +2,7 @@ language: C
 
 compiler:
     - gcc
+
+install: skip
+
+script: make
