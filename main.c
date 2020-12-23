@@ -12,7 +12,7 @@
 #define num_steps 1000
 #define tEnd 10000
 #define TOTAL_MASS 20.0
-#define nsnapshot 50
+#define nsnapshot 2
 
 void snapshot(double *pos, double *vel, double *mass, double t, int step)
 {
@@ -36,7 +36,7 @@ void snapshot(double *pos, double *vel, double *mass, double t, int step)
 
     if (posf == NULL || velf == NULL || massf == NULL)
     {
-        fprintf(stdout, "Error on opening one of the files.");
+        fprintf(stdout, "Error on opening one of the files.\n");
         exit(1);
     }
 
@@ -49,6 +49,10 @@ void snapshot(double *pos, double *vel, double *mass, double t, int step)
         fprintf(velf, "%f           %f           %f\n", vel[3*i], vel[3*i+1], vel[3*i+2]);
         fprintf(massf, "%f\n", mass[i]);
     }
+    
+    fclose(posf);
+    fclose(velf);
+    fclose(massf);
 }
 
 void init(double *pos, double *vel, double *mass)
