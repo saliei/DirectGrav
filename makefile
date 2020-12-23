@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -g -Wall -Werror
+CFLAGS := -g -Wall -Werror -DCSV
 LFLAGS := -lm
 
 
@@ -18,7 +18,7 @@ all: $(EXE)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 
-run:
+run: all
 	./$(EXE)
 
 clean:
