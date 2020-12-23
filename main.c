@@ -12,7 +12,7 @@
 #define num_steps 1000
 #define tEnd 10000
 #define TOTAL_MASS 20.0
-#define nsnapshot 2
+#define nsnapshot 50
 
 void snapshot(double *pos, double *vel, double *mass, double t, int step)
 {
@@ -20,14 +20,21 @@ void snapshot(double *pos, double *vel, double *mass, double t, int step)
     char posfbuf[100], velfbuf[100], massfbuf[100];
     int i;
     struct stat st = {0}; 
+#ifdef VTK
+char ext[10] = "vtk";
+#elif defined CSV
+char ext[10] = "csv";
+#else
+char ext[10] = "dat";
+#endif
     
     if (stat("./data", &st) == -1){
         mkdir("./data", 0700);
     }
 
-    snprintf(posfbuf, sizeof posfbuf, "./data/positions-%d.dat", step);
-    snprintf(velfbuf, sizeof velfbuf, "./data/velocities-%d.dat", step);
-    snprintf(massfbuf, sizeof massfbuf, "./data/mass-%d.dat", step);
+    snprintf(posfbuf, sizeof posfbuf, "./data/positions-%d.%s", step, ext);
+    snprintf(velfbuf, sizeof velfbuf, "./data/velocities-%d.%s", step, ext);
+    snprintf(massfbuf, sizeof massfbuf, "./data/mass-%d.%s", step, ext);
 
 
     posf = fopen(posfbuf, "w");
@@ -39,14 +46,20 @@ void snapshot(double *pos, double *vel, double *mass, double t, int step)
         fprintf(stdout, "Error on opening one of the files.\n");
         exit(1);
     }
-
-    fprintf(posf, "t = %f  X------------Y-------------Z\n", t);
-    fprintf(velf, "t = %f  Vx-----------Vy-----------Vz\n", t);
-    fprintf(massf, "t = %f  mass\n", t);
+    
+#ifdef VTK
+    fprintf(posf, "Position data\n");
+    fprintf(posf, "ASCII\n");
+    fprintf(posf, "Dataset STRUCTURED_GRID");
+    fprintf(velf, "Velocity data");
+#endif
+    fprintf(posf, "X, Y, Z\n");
+    fprintf(velf, "Vx, Vy, Vz\n");
+    fprintf(massf, "mass\n");
     for(i = 0; i < N; i++)
     {
-        fprintf(posf, "%f           %f           %f\n", pos[3*i], pos[3*i+1], pos[3*i+2]);
-        fprintf(velf, "%f           %f           %f\n", vel[3*i], vel[3*i+1], vel[3*i+2]);
+        fprintf(posf, "%f,%f,%f\n", pos[3*i], pos[3*i+1], pos[3*i+2]);
+        fprintf(velf, "%f,%f,%f\n", vel[3*i], vel[3*i+1], vel[3*i+2]);
         fprintf(massf, "%f\n", mass[i]);
     }
     
@@ -109,6 +122,29 @@ int main(){
     //INITI
     srand((unsigned int)time(NULL));
     init(pos, vel, mass);
+    
+    double mvx = 0.0, mvy = 0.0, mvz = 0.0;
+    double tm = 0.0;
+    for(i = 0; i < N; i++)
+    {
+       mvx += mass[i] * vel[3*i];
+       mvy += mass[i] * vel[3*i + 1];
+       mvz += mass[i] * vel[3*i + 2];
+       tm += mass[i];
+    }
+
+    double vcomx = 0.0, vcomy = 0.0, vcomz = 0.0;
+    vcomx = mvx / tm;
+    vcomy = mvy / tm;
+    vcomz = mvz / tm;
+
+    for( i = 0; i < N; i++ )
+    {
+        vel[3*i]     -= vcomx;
+        vel[3*i + 1] -= vcomy;
+        vel[3*i + 2] -= vcomz;
+    }
+
     
     acceleration(pos, mass, acc);
 
