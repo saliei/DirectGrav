@@ -1,0 +1,7 @@
+N  1000
+softening 0.01
+G  1.0
+num_steps 1000
+tEnd 10000
+TOTAL_MASS 20.0
+nsnapshot 50

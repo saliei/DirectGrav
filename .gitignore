@@ -54,3 +54,6 @@ dkms.conf
 
 # directories
 data*
+
+# dummy files
+*.swp
