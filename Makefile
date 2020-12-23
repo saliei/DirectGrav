@@ -27,4 +27,4 @@ clean:
 CA:
 	rm -rf *.o *.x *.dat data/
 
-main.x: main.o
+main.x: main.o io.o
