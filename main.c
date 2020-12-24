@@ -50,7 +50,7 @@ char ext[10] = "dat";
 #ifdef VTK
     fprintf(posf, "Position data\n");
     fprintf(posf, "ASCII\n");
-    fprintf(posf, "Dataset STRUCTURED_GRID");
+    fprintf(posf, "Dataset STRUCTURED_POINTS");
     fprintf(velf, "Velocity data");
 #endif
     fprintf(posf, "X, Y, Z\n");
