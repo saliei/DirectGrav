@@ -1,0 +1,2 @@
+#define DirectGrav_VERSION_MAJOR @DirectGrav_VERSION_MAJOR@
+#define DirectGrav_VERSION_MINOR @DirectGrav_VERSION_MINOR@

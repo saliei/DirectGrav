@@ -6,6 +6,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include "../include/main.h"
+
 #define N 1000
 #define softening 0.01
 #define G  1.0
@@ -99,7 +101,7 @@ void acceleration(double *pos, double * mass, double *acc)
 
 int main(){
      int i;
-     double t, dt = tEnd / num_steps;
+     double t = 0, dt = tEnd / num_steps;
      int step;
     double* pos = (double*)malloc(N*3*sizeof(double));
     double* vel = (double*)malloc(N*3*sizeof(double));
