@@ -1,6 +1,7 @@
 CC := gcc
 CFLAGS := -g -Wall -Werror -DCSV
 LFLAGS := -lm
+INC := I.
 
 
 SRC := $(wildcard *.c)
@@ -27,4 +28,4 @@ clean:
 CA:
 	rm -rf *.o *.x *.dat data/
 
-main.x: main.o io.o
+main.x: io.o main.o
