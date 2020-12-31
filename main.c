@@ -119,7 +119,6 @@ int main(){
     double* acc = (double*)malloc(N*3*sizeof(double));
     double* mass = (double*)malloc(N*1*sizeof(double));
 
-    //INITI
     srand((unsigned int)time(NULL));
     init(pos, vel, mass);
     
@@ -133,6 +132,7 @@ int main(){
        tm += mass[i];
     }
 
+//change to center of mass frame
     double vcomx = 0.0, vcomy = 0.0, vcomz = 0.0;
     vcomx = mvx / tm;
     vcomy = mvy / tm;
