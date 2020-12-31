@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include "io.h"
 
@@ -8,9 +10,8 @@ void read_params(char const *filename)
 {
     FILE *file;
     char line[MAX_LINE_LENGTH];
-    int linenum = 0;
     char prm[MAX_PARAM_LENGTH], prm_val[MAX_PARAM_LENGTH];
-    int count;
+    int count, linenum = 0;
     char *tok;
 
     file = fopen(filename, "r");
@@ -57,20 +58,85 @@ void read_params(char const *filename)
         }
     }
 
-    printf("G: %f\n", G);
-    printf("SOF: %f\n", SOFTENING);
-    printf("NUM_PAR: %ld\n", NUM_PARTICLES);
-    printf("OUT_FOR: %s\n", OUTPUT_FORMAT);
-    printf("NUM_STP: %ld\n", NUM_STEPS);
-
     fclose(file);
 }
 
-
-int main()
+void snapshot(double *pos, double *vel, double *mass, int step)
 {
+    FILE *posf, *velf, *massf;
+    char posfbuf[MAX_FILE_NAME_LENGTH], velfbuf[MAX_FILE_NAME_LENGTH], massfbuf[MAX_FILE_NAME_LENGTH];
+    struct stat st;
+    int i;
 
-    read_params(filename);
+    if (stat(DATADIR, &st) == -1) mkdir(DATADIR, 0700);
 
-    return 0;
+    snprintf(posfbuf,  sizeof posfbuf,   "%s/positions-%d.%s",  DATADIR, step, OUTPUT_FORMAT);
+    snprintf(velfbuf,  sizeof velfbuf,   "%s/velocities-%d.%s", DATADIR, step, OUTPUT_FORMAT);
+    snprintf(massfbuf, sizeof massfbuf,  "%s/mass-%d.%s",       DATADIR, step, OUTPUT_FORMAT);
+
+    posf  = fopen(posfbuf,  "w");
+    velf  = fopen(velfbuf,  "w");
+    massf = fopen(massfbuf, "w");
+
+    if (posf == NULL || velf == NULL || massf == NULL)
+    {
+        fprintf(stdout, "Error! Could not open one of the files to write.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    if(strcmp(OUTPUT_FORMAT, "dat") == 0)
+    {
+        fprintf(posf, "X            Y           Z");
+        fprintf(velf, "Vx           Vy          Vz");
+        fprintf(massf,"Mass");
+
+        for(i = 0; i < NUM_PARTICLES; i++)
+        {
+            fprintf(posf, "%10f %15f %15f\n", pos[3*i], pos[3*i+1], pos[3*i+2]);
+            fprintf(velf, "%10f %15f,%15f\n", vel[3*i], vel[3*i+1], vel[3*i+2]);
+            fprintf(massf,"%10f\n", mass[i]);
+        }
+    }
+    else if(strcmp(OUTPUT_FORMAT, "csv") == 0)
+    {
+        fprintf(posf, "X,           Y,          Z");
+        fprintf(velf, "Vx,          Vy,         Vz");
+        fprintf(massf,"Mass");
+
+        for(i = 0; i < NUM_PARTICLES; i++)
+        {
+            fprintf(posf, "%10f, %15f, %15f\n", pos[3*i], pos[3*i+1], pos[3*i+2]);
+            fprintf(velf, "%10f, %15f, %15f\n", vel[3*i], vel[3*i+1], vel[3*i+2]);
+            fprintf(massf,"%10f\n", mass[i]);
+        }
+    }
+    else if(strcmp(OUTPUT_FORMAT, "vtk") == 0)
+    {
+        fprintf(posf, "POSITION DATA\n");
+        fprintf(posf, "ASCII\n");
+        fprintf(posf, "DATASET STRUCTURED_POINTS\n");
+        fprintf(posf, "DIMENSIONS %ld %ld %ld\n", NUM_PARTICLES, NUM_PARTICLES, NUM_PARTICLES);
+        fprintf(posf, "ORGINI 0 0 0\n");
+        fprintf(posf, "SPACING 1 1 1\n");
+        fprintf(posf, "POINT_DATA %ld\n", NUM_PARTICLES);
+        fprintf(posf, "SCALARS POSITION double\n");
+        fprintf(posf, "LOOKUP_TABLE DEFAULT\n");
+
+        for(i = 0; i < NUM_PARTICLES; i++)
+        {
+            fprintf(posf, "%10f %15f %15f\n", pos[3*i], pos[3*i+1], pos[3*i+2]);
+            fprintf(velf, "%10f %15f,%15f\n", vel[3*i], vel[3*i+1], vel[3*i+2]);
+            fprintf(massf,"%10f\n", mass[i]);
+        }
+    }
+    else
+    {
+        fprintf(stderr, "Error! Data dump format is not implemented.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    fclose(posf);
+    fclose(velf);
+    fclose(massf);
 }
+
