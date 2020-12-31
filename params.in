@@ -1,7 +1,7 @@
 # number of particles
-NUM_PARTICLES  1000
+NUM_PARTICLES 1000
 # Newton gravitational constant
-G  1.0
+G 1.0
 # Number of steps
 NUM_STEPS 22000
 # end time of simulation
