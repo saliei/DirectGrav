@@ -6,15 +6,18 @@
 
 #include "io.h"
 
-void read_params(char const *filename)
+char const *PARAM_FILE_NAME = "param.in";
+char const *DATADIR = "data/";
+
+void read_params()
 {
     FILE *file;
     char line[MAX_LINE_LENGTH];
     char prm[MAX_PARAM_LENGTH], prm_val[MAX_PARAM_LENGTH];
-    int count, linenum = 0;
+    int  count, linenum = 0;
     char *tok;
 
-    file = fopen(filename, "r");
+    file = fopen(PARAM_FILE_NAME, "r");
     if(file == NULL)
     {
         fprintf(stdout, "Error! Could not open the parameter file.\n");
@@ -125,7 +128,7 @@ void snapshot(double *pos, double *vel, double *mass, int step)
         for(i = 0; i < NUM_PARTICLES; i++)
         {
             fprintf(posf, "%10f %15f %15f\n", pos[3*i], pos[3*i+1], pos[3*i+2]);
-            fprintf(velf, "%10f %15f,%15f\n", vel[3*i], vel[3*i+1], vel[3*i+2]);
+            fprintf(velf, "%10f %15f %15f\n", vel[3*i], vel[3*i+1], vel[3*i+2]);
             fprintf(massf,"%10f\n", mass[i]);
         }
     }
