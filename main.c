@@ -8,17 +8,18 @@
 void init(double *pos, double *vel, double *mass)
 {
     int i;
-    float L = 1.0;
+    float LIMIT = 1.0;
 
+    /*TODO: set up a box limit*/
     for(i = 0; i < NUM_PARTICLES; i++)
     {
-        pos[3*i]     = ((float)rand() / (float)(RAND_MAX)) * L;
-        pos[3*i + 1] = ((float)rand() / (float)(RAND_MAX)) * L;
-        pos[3*i + 2] = ((float)rand() / (float)(RAND_MAX)) * L;
+        pos[3 * i]   = ((float)rand() / (float)(RAND_MAX)) * LIMIT;
+        pos[3 * i+1] = ((float)rand() / (float)(RAND_MAX)) * LIMIT;
+        pos[3 * i+2] = ((float)rand() / (float)(RAND_MAX)) * LIMIT;
 
-        vel[3*i]     = ((float)rand() / (float)(RAND_MAX)) * L;
-        vel[3*i + 1] = ((float)rand() / (float)(RAND_MAX)) * L;
-        vel[3*i + 2] = ((float)rand() / (float)(RAND_MAX)) * L;
+        vel[3 * i]   = ((float)rand() / (float)(RAND_MAX)) * LIMIT;
+        vel[3 * i+1] = ((float)rand() / (float)(RAND_MAX)) * LIMIT;
+        vel[3 * i+2] = ((float)rand() / (float)(RAND_MAX)) * LIMIT;
 
         mass[i] = TOTAL_MASS * 1.0 / NUM_PARTICLES;
     }
@@ -34,15 +35,15 @@ void acceleration(double *pos, double * mass, double *acc)
     for(i = 0; i < NUM_PARTICLES; i++)
         for(j = 0; j < NUM_PARTICLES; j++)
         {
-            dx = pos[3*j] - pos[3*i];
-            dy = pos[3*j+1] - pos[3*i+1];
-            dz = pos[3*j+2] - pos[3*i+2];
+            dx = pos[3 * j]   - pos[3 * i];
+            dy = pos[3 * j+1] - pos[3 * i+1];
+            dz = pos[3 * j+2] - pos[3 * i+2];
 
             inv_r3 = pow((dx*dx + dy*dy + dz*dz + SOFTENING*SOFTENING),-1.5);
 
-            acc[3*i]   += G * (dx * inv_r3) * mass[j];
-            acc[3*i+1] += G * (dy * inv_r3) * mass[j];
-            acc[3*i+2] += G * (dz * inv_r3) * mass[j];
+            acc[3 * i]   += G * (dx * inv_r3) * mass[j];
+            acc[3 * i+1] += G * (dy * inv_r3) * mass[j];
+            acc[3 * i+2] += G * (dz * inv_r3) * mass[j];
 
         }
 }
