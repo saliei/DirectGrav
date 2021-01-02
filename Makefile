@@ -1,7 +1,7 @@
 CC := gcc
 CFLAGS := -g -Wall -Werror -DCSV
 LFLAGS := -lm
-INC := I.
+INC := -I.
 
 
 SRC := $(wildcard *.c)
