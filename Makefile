@@ -1,31 +1,35 @@
-CC := gcc
-CFLAGS := -g -Wall -Werror -DCSV
-LFLAGS := -lm
-INC := -I.
+CC       := gcc
+CPPFLAGS := -Iinclude -MMD -MP
+CFLAGS   := -g -O3 -Wall -Werror
+LDFLAGS  := -Llib
+LDLIBS   := -lm
 
+SRCDIR := src
+OBJDIR := obj
+BINDIR := build
 
-SRC := $(wildcard *.c)
-OBJ := $(SRC:%.c=%.o)
-EXE := main.x
+SRC := $(wildcard $(SRCDIR)/*.c)
+OBJ := $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
+
+EXE := $(BINDIR)/main.x
 
 .PHONY:all clean run
 
 all: $(EXE)
 
-%.x:
-	$(CC) $^ -o $@ $(LFLAGS)
+$(EXE): $(OBJ) | $(BINDIR)
+	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
+$(OBJDIR) $(BINDIR):
+	mkdir -p $@
 
 run: all
 	./$(EXE)
 
 clean:
-	rm -f *.o *.x
+	@$(RM) -rv $(BINDIR) $(OBJDIR)
 
-CA:
-	rm -rf *.o *.x *.dat data/
-
-main.x: io.o main.o
+-include $(OBJ:.o=.d)

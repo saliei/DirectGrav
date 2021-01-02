@@ -35,8 +35,9 @@ void read_params()
 
         while(tok != NULL)
         {
-            if(count == 0) strncpy(prm, tok, MAX_PARAM_LENGTH);
-            else if(count == 1) strncpy(prm_val, tok, MAX_PARAM_LENGTH);
+            /*strcpy: buffer overrun WARNING.*/
+            if(count == 0) strcpy(prm, tok);
+            else if(count == 1) strcpy(prm_val, tok);
             else
             {
                 fprintf(stdout ,"Error! Potentially erroneous parameter at line %d.\n", linenum);
