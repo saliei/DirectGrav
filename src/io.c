@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -146,5 +147,41 @@ void snapshot(double *pos, double *vel, double *mass, int step)
     fclose(posf);
     fclose(velf);
     fclose(massf);
+}
+
+void diagnostics(double *pos, double *vel, double *mass, int step)
+{
+    int i;
+    double x2 = 0.0, y2 = 0.0, z2 = 0.0, r2 = 0.0;
+    double vx2 = 0.0, vy2 = 0.0, vz2 = 0.0, v2 = 0.0;
+    double rmean = 0.0, vmean = 0.0, tmass = 0.0;
+
+    fprintf(stdout, "\nDiagnostics at step %d\n", step);
+
+    for( i = 0; i < NUM_PARTICLES; i++ )
+    {
+        x2  = pos[3 * i]   * pos[3 * i];
+        y2  = pos[3 * i+1] * pos[3 * i+1];
+        z2  = pos[3 * i+2] * pos[3 * i+2];
+
+        vx2 = vel[3 * i]   * vel[3 * i];
+        vy2 = vel[3 * i+1] * vel[3 * i+1];
+        vz2 = vel[3 * i+2] * vel[3 * i+2];  
+
+        r2 = x2 + y2 + z2;
+        v2 = vx2 + vy2 + vz2;
+        rmean += r2;
+        vmean += v2;
+
+        tmass += mass[i];
+    }
+    
+    rmean = pow(rmean, 0.5);
+    rmean /= NUM_PARTICLES;
+
+    vmean = pow(vmean, 0.5);
+    vmean /= NUM_PARTICLES;
+
+    fprintf(stdout, "Total mass: %5f, Rrms: %5f, Vrms: %5f\n", tmass, rmean, vmean);
 }
 
