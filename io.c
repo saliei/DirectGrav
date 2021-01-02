@@ -6,7 +6,7 @@
 
 #include "io.h"
 
-char const *PARAM_FILE_NAME = "param.in";
+char const *PARAM_FILE_NAME = "params.in";
 char const *DATADIR = "data/";
 
 void read_params()
@@ -49,7 +49,12 @@ void read_params()
             else if(strcmp(prm, "TEND") == 0) TEND = atol(prm_val);
             else if(strcmp(prm, "TOTAL_MASS") == 0) TOTAL_MASS = atof(prm_val);
             else if(strcmp(prm, "SNAPSHOT_FREQUENCY") == 0) SNAPSHOT_FREQUENCY = atol(prm_val);
-            else if(strcmp(prm, "OUTPUT_FORMAT") == 0) strcpy(OUTPUT_FORMAT, prm_val);
+            else if(strcmp(prm, "OUTPUT_FORMAT") == 0) 
+            {
+                int len = strlen(prm_val);
+                prm_val[len-1] = '\0';
+                strcpy(OUTPUT_FORMAT, prm_val);
+            }
             else
             {
                 fprintf(stdout, "Error! Unknown parameter %s at line %d\n", prm, linenum);
@@ -89,8 +94,8 @@ void snapshot(double *pos, double *vel, double *mass, int step)
 
     if(strcmp(OUTPUT_FORMAT, "dat") == 0)
     {
-        fprintf(posf, "X            Y           Z");
-        fprintf(velf, "Vx           Vy          Vz");
+        fprintf(posf, "X            Y           Z\n");
+        fprintf(velf, "Vx           Vy          Vz\n");
         fprintf(massf,"Mass");
 
         for(i = 0; i < NUM_PARTICLES; i++)
@@ -102,15 +107,15 @@ void snapshot(double *pos, double *vel, double *mass, int step)
     }
     else if(strcmp(OUTPUT_FORMAT, "csv") == 0)
     {
-        fprintf(posf, "X,           Y,          Z");
-        fprintf(velf, "Vx,          Vy,         Vz");
-        fprintf(massf,"Mass");
+        fprintf(posf, "X,           Y,          Z\n");
+        fprintf(velf, "Vx,          Vy,         Vz\n");
+        fprintf(massf,"Mass\n");
 
         for(i = 0; i < NUM_PARTICLES; i++)
         {
             fprintf(posf, "%10f, %15f, %15f\n", pos[3*i], pos[3*i+1], pos[3*i+2]);
             fprintf(velf, "%10f, %15f, %15f\n", vel[3*i], vel[3*i+1], vel[3*i+2]);
-            fprintf(massf,"%10f\n", mass[i]);
+            fprintf(massf,"%8f\n", mass[i]);
         }
     }
     else if(strcmp(OUTPUT_FORMAT, "vtk") == 0)
@@ -134,7 +139,7 @@ void snapshot(double *pos, double *vel, double *mass, int step)
     }
     else
     {
-        fprintf(stderr, "Error! Data dump format is not implemented.\n");
+        fprintf(stderr, "Error! Data dump format, '%s' is not implemented.\n", OUTPUT_FORMAT);
         exit(EXIT_FAILURE);
     }
 
