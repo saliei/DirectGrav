@@ -3,7 +3,7 @@ NUM_PARTICLES 1000
 # Newton gravitational constant
 G 1.0
 # Number of steps
-NUM_STEPS 22000
+NUM_STEPS 200
 # end time of simulation
 TEND 10000
 # total mass of system
@@ -11,6 +11,8 @@ TOTAL_MASS 20.0
 # frequency at which data is dumped
 SNAPSHOT_FREQUENCY 50
 # output data file format, options: "dat", "csv", "vtk"
-OUTPUT_FORMAT csv
+#OUTPUT_FORMAT dat
+#OUTPUT_FORMAT csv
+OUTPUT_FORMAT vtk
 # softening factor for close encounters
 SOFTENING 0.01
