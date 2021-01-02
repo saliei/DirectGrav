@@ -49,8 +49,14 @@ void acceleration(double *pos, double * mass, double *acc)
 }
 
 int main(){
+
     int step, i;
-    double t = 0.0, dt = TEND / NUM_STEPS;
+    double t = 0.0;
+
+    /*read in global parameters*/
+    read_params();
+          
+    double dt = TEND / NUM_STEPS;
 
     double *pos  = (double*)malloc(NUM_PARTICLES * 3 * sizeof(double));
     double *vel  = (double*)malloc(NUM_PARTICLES * 3 * sizeof(double));
