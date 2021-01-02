@@ -19,6 +19,7 @@ unsigned int SNAPSHOT_FREQUENCY;
 char OUTPUT_FORMAT[MAX_DATA_FORMAT_LENGTH];
 
 void read_params();
-void snapshot(double *pos, double *vel, double *massf, int step);
+void snapshot(double *pos, double *vel, double *mass, int step);
+void diagnostics(double *pos, double *vel, double *mass, int step);
 
 #endif
