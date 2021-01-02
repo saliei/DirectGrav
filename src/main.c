@@ -4,6 +4,7 @@
 #include <time.h>
 
 #include "../include/io.h"
+#include "../include/main.h"
 
 void init(double *pos, double *vel, double *mass)
 {
