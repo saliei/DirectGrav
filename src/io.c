@@ -24,6 +24,7 @@ void read_params()
         fprintf(stdout, "Error! Could not open the parameter file.\n");
         exit(EXIT_FAILURE);
     }
+    else fprintf(stdout, "Reading parameters...\n");
     
     while( fgets(line, MAX_LINE_LENGTH, file) != NULL )
     {
@@ -68,7 +69,9 @@ void read_params()
         }
     }
 
+    fprintf(stdout, "Done!\n");
     fclose(file);
+
 }
 
 void snapshot(double *pos, double *vel, double *mass, int step)

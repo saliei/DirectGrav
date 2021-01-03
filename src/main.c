@@ -11,6 +11,8 @@ void init(double *pos, double *vel, double *mass)
     int i;
     float LIMIT = 1.0;
 
+    fprintf(stdout, "Initializing positions, velocities and mass...\n");
+
     /*TODO: set up a box limit*/
     for(i = 0; i < NUM_PARTICLES; i++)
     {
@@ -24,6 +26,7 @@ void init(double *pos, double *vel, double *mass)
 
         mass[i] = TOTAL_MASS * 1.0 / NUM_PARTICLES;
     }
+    fprintf(stdout, "Done!\n");
 }
 
 void acceleration(double *pos, double * mass, double *acc)
@@ -118,7 +121,11 @@ int main(){
             vel[3 * i+2] += acc[3 * i+2] * dt / 2.0;
         }
         
-        if( step % SNAPSHOT_FREQUENCY == 0 ) snapshot(pos, vel, mass, step);
+        if( step % SNAPSHOT_FREQUENCY == 0 ) 
+        {
+            snapshot(pos, vel, mass, step);
+            diagnostics(pos, vel, mass, step);
+        }
 
         t += dt;
     }
