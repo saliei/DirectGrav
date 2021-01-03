@@ -25,6 +25,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
 
 $(OBJDIR) $(BINDIR):
 	mkdir -p $@
+	@cp "params.in" $(BINDIR)
 
 run: all
 	./$(EXE)
